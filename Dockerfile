@@ -13,7 +13,7 @@ RUN mkdir -p /opt/app
 RUN mkdir -p /opt/app/pip_cache
 RUN mkdir -p /opt/app/unir_devops_medex
 COPY requirements.txt start-server.sh /opt/app/
-COPY .pip_cache /opt/app/pip_cache/
+# COPY .pip_cache /opt/app/pip_cache/
 COPY src /opt/app/unir_devops_medex/
 WORKDIR /opt/app
 RUN pip install -r requirements.txt --cache-dir /opt/app/pip_cache
