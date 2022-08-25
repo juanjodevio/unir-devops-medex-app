@@ -22,18 +22,31 @@ jobs:
       run: |
         python src/manage.py test
   
-  tag:
-    needs: build
+  # tag:
+  #   needs: build
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - name: Version tag
+  #       uses: samamorgan/action-autotag-python@master
+  #       with:
+  #         path: src/__version__.py
+  #         variable: __version__
+  #         github_token: ${{ secrets.GITHUB_TOKEN }}
+  #         prefix: v
+  Version-check:
     runs-on: ubuntu-latest
+    name: Bump-N-Tag Version
     steps:
-      - uses: actions/checkout@v2
-      - name: Version tag
-        uses: samamorgan/action-autotag-python@master
-        with:
-          path: src/__version__.py
-          variable: __version__
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          prefix: v
+    - uses: actions/checkout@master
+    - name: Increment version
+      id: version   
+      uses: vinodhraj/Bump-N-Tag-Version@master
+      with:
+        file_name: './VERSION'
+        tag_version: "true"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   
   docker:
     needs: [tag, build]
