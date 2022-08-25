@@ -34,7 +34,7 @@ jobs:
   #         variable: __version__
   #         github_token: ${{ secrets.GITHUB_TOKEN }}
   #         prefix: v
-  Version-check:
+  tag:
     runs-on: ubuntu-latest
     name: Bump-N-Tag Version
     steps:
