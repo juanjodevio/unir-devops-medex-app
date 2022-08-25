@@ -23,19 +23,20 @@ jobs:
         python src/manage.py test
   
   tag:
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Version tag
         uses: samamorgan/action-autotag-python@master
         with:
-          path: package/__version__.py
+          path: src/__version__.py
           variable: __version__
           github_token: ${{ secrets.GITHUB_TOKEN }}
           prefix: v
   
   docker:
-    needs: build
+    needs: [tag, build]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
