@@ -7,7 +7,9 @@ on:
 
 jobs:
   build:
+
     runs-on: ubuntu-latest
+
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python 3.9
@@ -21,50 +23,3 @@ jobs:
     - name: Run Tests
       run: |
         python src/manage.py test
-  
-  # tag:
-  #   needs: build
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - name: Version tag
-  #       uses: samamorgan/action-autotag-python@master
-  #       with:
-  #         path: src/__version__.py
-  #         variable: __version__
-  #         github_token: ${{ secrets.GITHUB_TOKEN }}
-  #         prefix: v
-  tag:
-    runs-on: ubuntu-latest
-    name: Bump-N-Tag Version
-    steps:
-    - uses: actions/checkout@master
-    - name: Increment version
-      id: version   
-      uses: vinodhraj/Bump-N-Tag-Version@master
-      with:
-        file_name: './VERSION'
-        tag_version: "true"
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  
-  docker:
-    needs: [tag, build]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v1
-        with:
-          fetch-depth: 1
-
-      - name: Build & Push to AWS ECR Private
-        uses: opspresso/action-docker@master
-        with:
-          args: --ecr
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: "us-east-1"
-          TAG_NAME: ${{needs.tag.output.app_version}}
-          BUILDX: "true"
-          PLATFORM: "linux/amd64"
