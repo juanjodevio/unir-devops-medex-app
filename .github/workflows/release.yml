@@ -7,7 +7,7 @@ on:
     types: [ published ]
 
 jobs:
-  release-on-push:
+  tag:
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -43,23 +43,23 @@ jobs:
   #     env:
   #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   
-  # docker:
-  #   needs: tag
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v1
-  #       with:
-  #         fetch-depth: 1
+  docker:
+    needs: tag
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+        with:
+          fetch-depth: 1
 
-  #     - name: Build & Push to AWS ECR Private
-  #       uses: opspresso/action-docker@master
-  #       with:
-  #         args: --ecr
-  #       env:
-  #         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  #         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  #         AWS_REGION: "us-east-1"
-  #         TAG_NAME: ${{needs.tag.output.app_version}}
-  #         BUILDX: "true"
-  #         PLATFORM: "linux/amd64"
+      - name: Build & Push to AWS ECR Private
+        uses: opspresso/action-docker@master
+        with:
+          args: --ecr
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: "us-east-1"
+          TAG_NAME: ${{needs.tag.output.tag_name}}
+          BUILDX: "true"
+          PLATFORM: "linux/amd64"
