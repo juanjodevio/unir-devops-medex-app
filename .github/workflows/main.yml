@@ -42,3 +42,4 @@ jobs:
           AWS_REGION: "us-east-1"
           TAG_NAME: "v0.0.1"
           BUILDX: "true"
+          PLATFORM: "linux/amd64"
