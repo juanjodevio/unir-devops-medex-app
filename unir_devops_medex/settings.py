@@ -13,24 +13,21 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 import os
 from pathlib import Path
 
-import environ
 
-env = environ.Env(DEBUG=(bool, False))
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env("SECRET_KEY")
+SECRET_KEY = os.environ.get("SECRET_KEY", "123456789963258741")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env("DEBUG")
+DEBUG = os.environ.get("DEBUG", True)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -77,20 +74,23 @@ WSGI_APPLICATION = "unir_devops_medex.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
-DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': BASE_DIR / 'db.sqlite3',
-    # }
-    "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": env("MEDEX_APP_DB"),
-        "USER": env("MEDEX_APP_USER"),
-        "PASSWORD": env("MEDEX_APP_PASSWD"),
-        "HOST": env("MEDEX_APP_DB_HOST"),
-        "PORT": env("MEDEX_APP_DB_PORT"),
+if DEBUG:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.mysql",
+            "NAME": os.environ["MEDEX_APP_DB"],
+            "USER": os.environ["MEDEX_APP_USER"],
+            "PASSWORD": os.environ["MEDEX_APP_PASSWD"],
+            "HOST": os.environ["MEDEX_APP_DB_HOST"],
+            "PORT": os.environ["MEDEX_APP_DB_PORT"],
+        }
     }
-}
 
 
 # Password validation
