@@ -5,8 +5,16 @@ on:
     types: [opened, synchronize, reopened]
 
 jobs:
-  build:
 
+  labeler:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-ecosystem/action-add-labels@v1
+        with:
+          labels: patch
+  
+  test:
     runs-on: ubuntu-latest
 
     steps:
@@ -22,3 +30,19 @@ jobs:
     - name: Run Tests
       run: |
         python src/manage.py test
+  format:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v3
+      with:
+        python-version: 3.9
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Run Tests
+      run: |
+        black --check .
