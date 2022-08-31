@@ -28,6 +28,17 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
     - name: Run Tests
+      env:
+        DJANGO_SUPERUSER_USERNAME: admin 
+        DJANGO_SUPERUSER_PASSWORD: sekret1
+        DJANGO_SUPERUSER_EMAIL: admin@example.com
+        MEDEX_APP_USER: medex_app
+        MEDEX_APP_PASSWD: MYsuper$passwd123
+        MEDEX_APP_DB: medex_app
+        MEDEX_APP_DB_HOST: 127.0.0.1
+        MEDEX_APP_DB_PORT: 3306
+        SECRET_KEY: MEGAPOWERFULLSECRETKEY
+        DEBUG: 1
       run: |
         python src/manage.py test
   format:
