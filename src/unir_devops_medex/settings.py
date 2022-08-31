@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # Third party apps
+    'health_check',  
     "crispy_forms",
     "crispy_tailwind",
     "tailwind",

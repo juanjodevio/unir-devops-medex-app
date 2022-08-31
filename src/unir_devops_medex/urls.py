@@ -11,12 +11,10 @@ from django.contrib.auth.views import (
 )
 from django.urls import include, path
 
-from leads.views import DashboardView, LandingPageView, SignupView, landing_page
-
-from . import views
+from leads.views import DashboardView, LandingPageView, SignupView
 
 urlpatterns = [
-    path("healthcheck/", views.healthcheck, name="healthcheck"),
+    path('health/', include('health_check.urls')),
     path("admin/", admin.site.urls),
     path("", LandingPageView.as_view(), name="landing-page"),
     path("dashboard/", DashboardView.as_view(), name="dashboard"),
