@@ -10,6 +10,8 @@ from leads.models import Agent
 from .forms import AgentModelForm
 from .mixins import OrganisorAndLoginRequiredMixin
 
+agent_list_view = "agents:agent-list"
+
 
 class AgentListView(OrganisorAndLoginRequiredMixin, generic.ListView):
     template_name = "agents/agent_list.html"
@@ -24,7 +26,7 @@ class AgentCreateView(OrganisorAndLoginRequiredMixin, generic.CreateView):
     form_class = AgentModelForm
 
     def get_success_url(self):
-        return reverse("agents:agent-list")
+        return reverse(agent_list_view)
 
     def form_valid(self, form):
         user = form.save(commit=False)
@@ -56,7 +58,7 @@ class AgentUpdateView(OrganisorAndLoginRequiredMixin, generic.UpdateView):
     form_class = AgentModelForm
 
     def get_success_url(self):
-        return reverse("agents:agent-list")
+        return reverse(agent_list_view)
 
     def get_queryset(self):
         organisation = self.request.user.userprofile
@@ -68,7 +70,7 @@ class AgentDeleteView(OrganisorAndLoginRequiredMixin, generic.DeleteView):
     context_object_name = "agent"
 
     def get_success_url(self):
-        return reverse("agents:agent-list")
+        return reverse(agent_list_view)
 
     def get_queryset(self):
         organisation = self.request.user.userprofile

@@ -49,18 +49,24 @@
         {% for followup in lead.followups.all %}
             <div class="mt-5 shadow px-4 sm:px-6">
                 <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+                    <dl>
                     <dt class="text-sm font-medium text-gray-500">
                     Notes (<a href="{% url 'leads:lead-followup-update' followup.pk %}" class="text-blue-500 hover:text-blue-700">update</a>)
                     </dt>
+
+                    </dl>
                     <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                     {{ followup.notes }}
                     </dd>
                 </div>
                 {% if followup.file %}
                     <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
-                        <dt class="text-sm font-medium text-gray-500">
-                        Attachments
-                        </dt>
+                     <dl>
+
+                         <dt class="text-sm font-medium text-gray-500">
+                             Attachments
+                            </dt>
+                        </dl> 
                         <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                         <ul class="border border-gray-200 rounded-md divide-y divide-gray-200">
                             <li class="pl-3 pr-4 py-3 flex items-center justify-between text-sm">
