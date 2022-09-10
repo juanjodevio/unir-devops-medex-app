@@ -27,6 +27,8 @@ class LeadModelForm(forms.ModelForm):
         return data
 
     def clean(self):
+        """Needs more work to define functionality
+        """
         pass
 
 
