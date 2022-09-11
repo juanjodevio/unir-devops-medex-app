@@ -25,7 +25,10 @@ from .models import Agent, Category, FollowUp, Lead
 
 logger = logging.getLogger(__name__)
 
-
+lead_list_view = "leads:lead-list"
+leads_category_view = "leads:category-list"
+leads_detail_view = "leads:lead-detail"
+leads_root = "/leads"
 # CRUD+L - Create, Retrieve, Update and Delete + List
 
 
@@ -149,7 +152,7 @@ class LeadCreateView(OrganisorAndLoginRequiredMixin, generic.CreateView):
     form_class = LeadModelForm
 
     def get_success_url(self):
-        return reverse("leads:lead-list")
+        return reverse(lead_list_view)
 
     def form_valid(self, form):
         lead = form.save(commit=False)
@@ -171,7 +174,7 @@ def lead_create(request):
         form = LeadModelForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect("/leads")
+            return redirect(leads_root)
     context = {"form": form}
     return render(request, "leads/lead_create.html", context)
 
@@ -186,7 +189,7 @@ class LeadUpdateView(OrganisorAndLoginRequiredMixin, generic.UpdateView):
         return Lead.objects.filter(organisation=user.userprofile)
 
     def get_success_url(self):
-        return reverse("leads:lead-list")
+        return reverse(lead_list_view)
 
     def form_valid(self, form):
         form.save()
@@ -201,7 +204,7 @@ def lead_update(request, pk):
         form = LeadModelForm(request.POST, instance=lead)
         if form.is_valid():
             form.save()
-            return redirect("/leads")
+            return redirect(leads_root)
     context = {"form": form, "lead": lead}
     return render(request, "leads/lead_update.html", context)
 
@@ -210,7 +213,7 @@ class LeadDeleteView(OrganisorAndLoginRequiredMixin, generic.DeleteView):
     template_name = "leads/lead_delete.html"
 
     def get_success_url(self):
-        return reverse("leads:lead-list")
+        return reverse(lead_list_view)
 
     def get_queryset(self):
         user = self.request.user
@@ -221,7 +224,7 @@ class LeadDeleteView(OrganisorAndLoginRequiredMixin, generic.DeleteView):
 def lead_delete(request, pk):
     lead = Lead.objects.get(id=pk)
     lead.delete()
-    return redirect("/leads")
+    return redirect(leads_root)
 
 
 class AssignAgentView(OrganisorAndLoginRequiredMixin, generic.FormView):
@@ -234,7 +237,7 @@ class AssignAgentView(OrganisorAndLoginRequiredMixin, generic.FormView):
         return kwargs
 
     def get_success_url(self):
-        return reverse("leads:lead-list")
+        return reverse(lead_list_view)
 
     def form_valid(self, form):
         agent = form.cleaned_data["agent"]
@@ -291,7 +294,7 @@ class CategoryCreateView(OrganisorAndLoginRequiredMixin, generic.CreateView):
     form_class = CategoryModelForm
 
     def get_success_url(self):
-        return reverse("leads:category-list")
+        return reverse(leads_category_view)
 
     def form_valid(self, form):
         category = form.save(commit=False)
@@ -305,7 +308,7 @@ class CategoryUpdateView(OrganisorAndLoginRequiredMixin, generic.UpdateView):
     form_class = CategoryModelForm
 
     def get_success_url(self):
-        return reverse("leads:category-list")
+        return reverse(leads_category_view)
 
     def get_queryset(self):
         user = self.request.user
@@ -321,7 +324,7 @@ class CategoryDeleteView(OrganisorAndLoginRequiredMixin, generic.DeleteView):
     template_name = "leads/category_delete.html"
 
     def get_success_url(self):
-        return reverse("leads:category-list")
+        return reverse(leads_category_view)
 
     def get_queryset(self):
         user = self.request.user
@@ -349,7 +352,7 @@ class LeadCategoryUpdateView(LoginRequiredMixin, generic.UpdateView):
         return queryset
 
     def get_success_url(self):
-        return reverse("leads:lead-detail", kwargs={"pk": self.get_object().id})
+        return reverse(leads_detail_view, kwargs={"pk": self.get_object().id})
 
     def form_valid(self, form):
         lead_before_update = self.get_object()
@@ -369,7 +372,7 @@ class FollowUpCreateView(LoginRequiredMixin, generic.CreateView):
     form_class = FollowUpModelForm
 
     def get_success_url(self):
-        return reverse("leads:lead-detail", kwargs={"pk": self.kwargs["pk"]})
+        return reverse(leads_detail_view, kwargs={"pk": self.kwargs["pk"]})
 
     def get_context_data(self, **kwargs):
         context = super(FollowUpCreateView, self).get_context_data(**kwargs)
@@ -402,7 +405,7 @@ class FollowUpUpdateView(LoginRequiredMixin, generic.UpdateView):
         return queryset
 
     def get_success_url(self):
-        return reverse("leads:lead-detail", kwargs={"pk": self.get_object().lead.id})
+        return reverse(leads_detail_view, kwargs={"pk": self.get_object().lead.id})
 
 
 class FollowUpDeleteView(OrganisorAndLoginRequiredMixin, generic.DeleteView):
@@ -410,7 +413,7 @@ class FollowUpDeleteView(OrganisorAndLoginRequiredMixin, generic.DeleteView):
 
     def get_success_url(self):
         followup = FollowUp.objects.get(id=self.kwargs["pk"])
-        return reverse("leads:lead-detail", kwargs={"pk": followup.lead.pk})
+        return reverse(leads_detail_view, kwargs={"pk": followup.lead.pk})
 
     def get_queryset(self):
         user = self.request.user
@@ -424,49 +427,6 @@ class FollowUpDeleteView(OrganisorAndLoginRequiredMixin, generic.DeleteView):
             # filter for the agent that is logged in
             queryset = queryset.filter(lead__agent__user=user)
         return queryset
-
-
-# def lead_update(request, pk):
-#     lead = Lead.objects.get(id=pk)
-#     form = LeadForm()
-#     if request.method == "POST":
-#         form = LeadForm(request.POST)
-#         if form.is_valid():
-#             first_name = form.cleaned_data['first_name']
-#             last_name = form.cleaned_data['last_name']
-#             age = form.cleaned_data['age']
-#             lead.first_name = first_name
-#             lead.last_name = last_name
-#             lead.age = age
-#             lead.save()
-#             return redirect("/leads")
-# context = {
-#     "form": form,
-#     "lead": lead
-# }
-#     return render(request, "leads/lead_update.html", context)
-
-
-# def lead_create(request):
-# form = LeadForm()
-# if request.method == "POST":
-#     form = LeadForm(request.POST)
-#     if form.is_valid():
-#         first_name = form.cleaned_data['first_name']
-#         last_name = form.cleaned_data['last_name']
-#         age = form.cleaned_data['age']
-#         agent = Agent.objects.first()
-#         Lead.objects.create(
-#             first_name=first_name,
-#             last_name=last_name,
-#             age=age,
-#             agent=agent
-#         )
-#         return redirect("/leads")
-# context = {
-#     "form": form
-# }
-#     return render(request, "leads/lead_create.html", context)
 
 
 class LeadJsonView(generic.View):

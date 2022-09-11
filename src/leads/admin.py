@@ -4,11 +4,6 @@ from .models import Agent, Category, FollowUp, Lead, User, UserProfile
 
 
 class LeadAdmin(admin.ModelAdmin):
-    # fields = (
-    #     'first_name',
-    #     'last_name',
-    # )
-
     list_display = ["first_name", "last_name", "age", "email"]
     list_display_links = ["first_name"]
     list_editable = ["last_name"]
